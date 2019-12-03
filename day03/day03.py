@@ -15,6 +15,11 @@ def put(point):
         grid[point] = 1
 
 
+# move the wire ct steps in direction dir (N/S/E/W)
+def do_segment(dir, ct):
+
+
+# move the wire through all segments. assumes starting direction is always N.
 def do_path(start, path):
     #
 
