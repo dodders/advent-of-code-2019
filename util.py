@@ -45,3 +45,19 @@ class Node():
         return '%s ->: %s' % (self.value, self.child_values())
 
 
+def mygroup(coll, func=None):
+    ret = {}
+    for i in coll:
+        if func is None:
+            k = i
+        else:
+            k = func(coll)
+        if k in ret:
+            ret[k] = ret[k] + 1
+        else:
+            ret[k] = 1
+    return ret
+
+
+def uniq(coll, func=None):
+    return len(mygroup(coll, func).keys()) == len(coll)

@@ -105,6 +105,7 @@ class Opcode:
 
 
 # part1 5346030
+# part 2 input 5 ans 513116
 while True:
     print_stack()
     op = Opcode(str(stack[ptr]))
