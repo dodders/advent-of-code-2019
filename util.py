@@ -1,3 +1,7 @@
+from math import atan2
+from math import pi
+
+
 def get_input(prod, day):
     if prod:
         fname = 'data.txt'
@@ -43,6 +47,33 @@ class Node():
 
     def __repr__(self):
         return '%s ->: %s' % (self.value, self.child_values())
+
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __repr__(self):
+        return f'p({self.x},{self.y})'
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+
+    def diff(self, other):
+        return Point(other.x - self.x, other.y - self.y)
+
+    # manhattan distance
+    def distance(self, other):
+        difference = self.diff(other)
+        return abs(difference.x) + abs(difference.y)
+
+    def angle(self, other):
+        rad = atan2(other.y - self.y, other.x - self.x)
+        return rad * (180 / pi)  # convert radians to degrees
 
 
 def mygroup(coll, func=None):
