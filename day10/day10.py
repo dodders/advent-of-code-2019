@@ -17,18 +17,14 @@ def can_see(origin, points):
     sees = []
     points.remove(origin)
     angles = {}
-    # with_angles = [(origin, get_angle(origin, point)) for point in points]
     for point in points:
         angle = origin.angle(point)
         existing = angles.get(angle, None)
         if existing is None:
             angles[angle] = (origin, point, origin.distance(point))
-            # print(f'angle from {origin} to {point} is {angle} is new')
         else:
             if origin.distance(point) < existing[2]:
-                # print(f'angle from {origin} to {point} is {angle} replacing {existing}')
                 angles[angle] = (origin, point, origin.distance(point))
-    # print(angles)
     for e in angles.values():
         sees.append(e[1])
     return sees
@@ -56,7 +52,59 @@ def part1():
     print('part1:', ans)
 
 
-inp = util.get_input(False, '10')
+def asteroids_by_angle(origin, points):
+    points.remove(origin)
+    angles = {}
+    for point in points:
+        angle = origin.angle(point)
+        existing = angles.get(angle, None)
+        if existing is None:
+            angles[angle] = [(point, origin.distance(point))]
+        else:
+            existing.append((point, origin.distance(point)))
+    for angle_list in angles.values():
+        angle_list.sort(key=lambda x: x[1])
+    return angles
+
+
+def part2(origin):
+    roids = asteroids_by_angle(origin, grid.copy())
+    rotation = [sorted(iter(roids.keys()))][0]
+    ptr = 0
+    while rotation[ptr] != -90 and ptr < len(rotation):
+        ptr += 1
+    print('starting at ptr', rotation[ptr])
+    ct = 1
+    while len(roids.keys()) > 0:
+        print('ptr', rotation[ptr], 'rotation length', len(roids.keys()))
+        roid_list = roids.get(rotation[ptr], None)
+        if roid_list is None:
+            print(f'no roid list found for angle {rotation[ptr]}')
+        else:
+            asteroid = roid_list.pop(0)
+            print(f'shooting asteroid {asteroid} at angle {rotation[ptr]} with shot {ct}!')
+            if ct == 200:
+                ast = asteroid[0]
+                print(f'part 2: {ast.x * 100 + ast.y}')
+                exit(0)
+            ct += 1
+            if len(roid_list) == 0:
+                print(f'all asteroids at angle {rotation[ptr]} have been lazered!')
+                del roids[rotation[ptr]]
+        ptr += 1
+        if ptr >= len(rotation):
+            print(f'reached the end of the rotation. cycling...')
+            ptr = 0
+
+
+# inp = util.get_input(False, '10')
+inp = util.get_input(True, '10')
 grid, maxx, maxy = parse(inp)
-print(maxx, maxy, grid)
-part1()
+# print(maxx, maxy, grid)
+# part1()
+
+# dis is for testing...
+# o = Point(11, 13)
+# dis is for real...
+o = Point(28, 29)
+part2(o)
