@@ -1,5 +1,6 @@
 from math import atan2
 from math import pi
+from math import gcd
 
 
 def get_input(prod, day):
@@ -92,3 +93,7 @@ def mygroup(coll, func=None):
 
 def uniq(coll, func=None):
     return len(mygroup(coll, func).keys()) == len(coll)
+
+
+def lcm(a, b):
+    return a * b // gcd(a, b)

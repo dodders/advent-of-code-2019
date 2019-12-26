@@ -1,8 +1,9 @@
 import re
+from util import lcm
 
 
 class Moon:
-    def __init__(self, key, px, py, pz, vx=0, vy=0, vz=0):
+    def __init__(self, key, px=0, py=0, pz=0, vx=0, vy=0, vz=0):
         self.key = key
         self.px = px
         self.py = py
@@ -78,20 +79,47 @@ def part1(moons):
     print('part1:', total_energy(moons))
 
 
+def originals(key, original, curr):
+    ret = True
+    pkey = 'p' + key
+    vkey = 'v' + key
+    for i, o in enumerate(original):
+        c = curr[i]
+        if getattr(o, pkey) != getattr(c, pkey) or getattr(o, vkey) != getattr(c, vkey):
+            ret = False
+    return ret
+
+
 def part2(moons):
     orig = moons.copy()
+    x, y, z = False, False, False
     for i in range(1, steps + 1):
         moons = time_step(moons)
-        # print(moons)
-        for m in moons:
-            if m in orig:
-                print('step', i, 'moon', m, 'has cycled')
+        if not x and originals('x', orig, moons):
+            print(f'all xs are back to original at step {i}')
+            x_cycle = i
+            x = True
+        if not y and originals('y', orig, moons):
+            print(f'all ys are back to original at step {i}')
+            y_cycle = i
+            y = True
+        if not z and originals('z', orig, moons):
+            print(f'all zs are back to original at step {i}')
+            z_cycle = i
+            z = True
+        if x and y and z:
+            ans = lcm(x_cycle, lcm(y_cycle, z_cycle))
+            # part 2 374307970285176
+            print(f'part 2: {ans}')
+            break
 
 
-inp = ['<x=-1, y=0, z=2>', '<x=2, y=-10, z=-7>', '<x=4, y=-8, z=8>', '<x=3, y=5, z=-1>']  # test
+# inp = ['<x=-1, y=0, z=2>', '<x=2, y=-10, z=-7>', '<x=4, y=-8, z=8>', '<x=3, y=5, z=-1>']  # test
 # inp = ['<x=-8, y=-10, z=0>', '<x=5, y=5, z=10>', '<x=2, y=-7, z=3>', '<x=9, y=-8, z=-3>']  # test2
-# inp = ['<x=16, y=-11, z=2>','<x=0, y=-4, z=7>','<x=6, y=4, z=-10>','<x=-3, y=-2, z=-4>']  # prod
-steps = 2772
+inp = ['<x=16, y=-11, z=2>','<x=0, y=-4, z=7>','<x=6, y=4, z=-10>','<x=-3, y=-2, z=-4>']  # prod
+# steps = 100
+# steps = 2772
+steps = 1000000
 moons = load(inp)
 print('step 0 moons', moons)
 part2(moons)
